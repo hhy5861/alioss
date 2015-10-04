@@ -8,3 +8,13 @@ func tTestPutBucketAcl(t *testing.T) {
         t.Errorf("put bucket acl error: %s\n", err.Error())
     }
 }
+
+func tTestGetBucketAcl(t *testing.T) {
+    c := NewTestClient()
+    r, e := c.GetBucketAcl("acrazing-test", "oss-cn-qingdao")
+    if e != nil {
+        t.Errorf("get bucket acl error %s\n", e.Error())
+    } else {
+        t.Log(r.AccessControlList)
+    }
+}
