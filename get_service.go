@@ -28,16 +28,7 @@ type getServiceBucket struct {
 
 func (c *Client) GetService() (resp *GetServiceResp, err Error) {
     c.Host = "oss.aliyuncs.com"
-    r, err := c.Do("GET")
-    if err != nil {
-        return
-    }
-    defer r.Body.Close()
-    if r.StatusCode != 200 {
-        return resp, GetReqError(r)
-    } else {
-        resp = &GetServiceResp{}
-        err = UnmarshalXmlResp(r, resp)
-        return resp, err
-    }
+    resp = &GetServiceResp{}
+    err = c.DoAll("GET", resp, nil)
+    return
 }

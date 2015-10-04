@@ -8,7 +8,7 @@ func tTestMarshalXML(t *testing.T) {
 
 func tTestPutBucket(t *testing.T) {
     c := NewTestClient()
-    _, err := c.PutBucket("acrazing-test", "public-read", "oss-cn-qingdao")
+    err := c.PutBucket("acrazing-test2", "public-read", "oss-cn-qingdao")
     if err != nil {
         t.Errorf("put bucket error: %s\n", err.Error())
     }

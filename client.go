@@ -47,6 +47,13 @@ func (c *Client) SetQuery(k, v string) *Client {
     return c
 }
 
+func (c *Client) SetQueries(q map[string]string) *Client {
+    for k, v := range q {
+        c.Query[k] = v
+    }
+    return c
+}
+
 func (c *Client) Do(method string) (*http.Response, Error) {
     c.Request.Method = method
     c.InitAuth()
@@ -58,4 +65,27 @@ func (c *Client) Do(method string) (*http.Response, Error) {
         return r, E_HttpReq
     }
     return r, nil
+}
+
+func (c *Client) DoAll(method string, resp interface{}, req interface{}) (err Error) {
+    if req != nil {
+        b, err := MarshalXmlReqBody(req)
+        if err != nil {
+            return err
+        }
+        c.Request.Body = b
+    }
+    r, err := c.Do(method)
+    if err != nil {
+        return
+    }
+    defer r.Body.Close()
+    if r.StatusCode != 200 {
+        return GetReqError(r)
+    } else {
+        if resp != nil {
+            err = UnmarshalXmlResp(r, resp)
+        }
+        return err
+    }
 }

@@ -1,7 +1,7 @@
 package alioss
 import (
     "encoding/xml"
-    "fmt"
+    "time"
 )
 
 type PutBucketReq struct {
@@ -9,26 +9,43 @@ type PutBucketReq struct {
     LocationConstraint  string
 }
 
-func (c *Client) PutBucket(name, acl, loc string) (resp bool, err Error) {
+func (c *Client) PutBucket(name, acl, loc string) (err Error) {
     c.Request.Header.Set("x-oss-acl", acl)
     c.BucketName = name
     c.Host = loc + ".aliyuncs.com"
     req := PutBucketReq{LocationConstraint: loc}
-    b, err := MarshalXmlReqBody(req)
-    if err != nil {
-        return false, err
-    }
-    c.Request.Body = b
-    r, err := c.Do("PUT")
-    _ = fmt.Println
-    fmt.Println(c.Request.Header.Get("Authorization"))
-    if err != nil {
-        return
-    }
-    defer r.Body.Close()
-    if r.StatusCode != 200 {
-        return false, GetReqError(r)
-    } else {
-        return true, nil
-    }
+    err = c.DoAll("PUT", nil, req)
+    return
+}
+
+type GetBucketResp struct {
+    XMLName         xml.Name            `xml:"ListBucketResult"`
+    Contents        []getBucketContent  `xml:"Contents"`
+    CommonPrefixes  string
+    Delimiter       string
+    EncodingType    string              `xml:"encoding-type"`
+    IsTruncated     bool
+    Marker          string
+    MaxKeys         int
+    Name            string
+    Owner           getServiceOwner
+    Prefix          string
+}
+
+type getBucketContent struct {
+    Owner           getServiceOwner
+    ETag            string
+    Key             string
+    LastModified    time.Time
+    Size            int
+    StorageClass    string
+}
+
+func (c *Client) GetBucket(name, loc string, limiter map[string]string) (resp *GetBucketResp, err Error) {
+    c.BucketName = name
+    c.Host = loc + ".aliyuncs.com"
+    c.SetQueries(limiter)
+    resp = &GetBucketResp{}
+    err = c.DoAll("GET", resp, nil)
+    return
 }
