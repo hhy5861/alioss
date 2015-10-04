@@ -42,10 +42,12 @@ type getBucketContent struct {
 }
 
 func (c *Client) GetBucket(name, loc string, limiter map[string]string) (resp *GetBucketResp, err Error) {
-    c.BucketName = name
-    c.Host = loc + ".aliyuncs.com"
-    c.SetQueries(limiter)
+    c.SetBucketHost(name, loc).SetQueries(limiter)
     resp = &GetBucketResp{}
     err = c.DoAll("GET", resp, nil)
     return
+}
+
+func (c *Client) DeleteBucket(name, loc string) (err Error) {
+    return c.SetBucketHost(name, loc).DoAll("DELETE", nil, nil)
 }

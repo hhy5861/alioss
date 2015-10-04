@@ -54,6 +54,12 @@ func (c *Client) SetQueries(q map[string]string) *Client {
     return c
 }
 
+func (c *Client) SetBucketHost(bucket, loc string) *Client {
+    c.BucketName = bucket
+    c.Host = loc + ".aliyuncs.com"
+    return c
+}
+
 func (c *Client) Do(method string) (*http.Response, Error) {
     c.Request.Method = method
     c.InitAuth()
@@ -80,7 +86,7 @@ func (c *Client) DoAll(method string, resp interface{}, req interface{}) (err Er
         return
     }
     defer r.Body.Close()
-    if r.StatusCode != 200 {
+    if r.StatusCode > 299 {
         return GetReqError(r)
     } else {
         if resp != nil {

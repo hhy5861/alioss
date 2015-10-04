@@ -58,6 +58,8 @@ func NewError(c string) errors {
     return errors{Code: c}
 }
 
+const NO_CONTENT string = "204 No Content"
+
 func GetReqError(r *http.Response) Error {
     a := NewError("")
     e := UnmarshalXmlResp(r, &a)
