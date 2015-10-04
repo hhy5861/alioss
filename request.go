@@ -10,6 +10,7 @@ func (c *Client) InitRequest() error {
     if err == nil {
         c.Request.Host = u.Host
     }
+    c.Request.Header.Add("User-Agent", "HTTP/1.1 Client")
     return err
 }
 
