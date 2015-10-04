@@ -5,19 +5,23 @@ import (
 )
 
 func (c *Client) InitRequest() error {
-    h, u, err := c.GetUrl()
-    c.Request.Host = h
+    u, err := c.GetUrl()
     c.Request.URL = u
+    if err == nil {
+        c.Request.Host = u.Host
+    }
     return err
 }
 
-func (c *Client) GetUrl() (h string, u *url.URL, err error) {
+func (c *Client) GetUrl() (u *url.URL, err error) {
     s := "http://"
     if c.BucketName != "" {
-        h += c.BucketName + "."
+        s += c.BucketName + "."
     }
-    h += c.Host
-    s += h + "/" + c.ObjectName
+    if c.Location != "" {
+        s += c.Location + "."
+    }
+    s += "aliyuncs.com/" + c.ObjectName
     if len(c.Query) > 0 {
         s += "?"
         q := []string{}
@@ -30,5 +34,5 @@ func (c *Client) GetUrl() (h string, u *url.URL, err error) {
         s += strings.Join(q, "&")
     }
     u, err = url.Parse(s)
-    return h, u, err
+    return u, err
 }

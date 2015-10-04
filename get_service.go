@@ -27,7 +27,8 @@ type getServiceBucket struct {
 }
 
 func (c *Client) GetService() (resp *GetServiceResp, err Error) {
-    c.Host = "oss.aliyuncs.com"
+    c.BucketName = ""
+    c.Location = "oss"
     resp = &GetServiceResp{}
     err = c.DoAll("GET", resp, nil)
     return

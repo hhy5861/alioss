@@ -3,7 +3,7 @@ import "testing"
 
 func tTestPutBucketAcl(t *testing.T) {
     c := NewTestClient()
-    err := c.PutBucketAcl("acrazing-test22", "private1", "oss-cn-qingdao")
+    err := c.PutBucketAcl("public-read")
     if err != nil {
         t.Errorf("put bucket acl error: %s\n", err.Error())
     }
@@ -11,7 +11,7 @@ func tTestPutBucketAcl(t *testing.T) {
 
 func tTestGetBucketAcl(t *testing.T) {
     c := NewTestClient()
-    r, e := c.GetBucketAcl("acrazing-test", "oss-cn-qingdao")
+    r, e := c.GetBucketAcl()
     if e != nil {
         t.Errorf("get bucket acl error %s\n", e.Error())
     } else {

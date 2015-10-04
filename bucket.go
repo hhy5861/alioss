@@ -9,11 +9,9 @@ type PutBucketReq struct {
     LocationConstraint  string
 }
 
-func (c *Client) PutBucket(name, acl, loc string) (err Error) {
+func (c *Client) PutBucket(acl string) (err Error) {
     c.Request.Header.Set("x-oss-acl", acl)
-    c.BucketName = name
-    c.Host = loc + ".aliyuncs.com"
-    req := PutBucketReq{LocationConstraint: loc}
+    req := PutBucketReq{LocationConstraint: c.Location}
     err = c.DoAll("PUT", nil, req)
     return
 }
@@ -41,13 +39,13 @@ type getBucketContent struct {
     StorageClass    string
 }
 
-func (c *Client) GetBucket(name, loc string, limiter map[string]string) (resp *GetBucketResp, err Error) {
-    c.SetBucketHost(name, loc).SetQueries(limiter)
+func (c *Client) GetBucket(limiter map[string]string) (resp *GetBucketResp, err Error) {
+    c.SetQueries(limiter)
     resp = &GetBucketResp{}
     err = c.DoAll("GET", resp, nil)
     return
 }
 
-func (c *Client) DeleteBucket(name, loc string) (err Error) {
-    return c.SetBucketHost(name, loc).DoAll("DELETE", nil, nil)
+func (c *Client) DeleteBucket() (err Error) {
+    return c.DoAll("DELETE", nil, nil)
 }

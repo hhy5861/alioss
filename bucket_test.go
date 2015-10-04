@@ -10,7 +10,7 @@ func tTestMarshalXML(t *testing.T) {
 
 func tTestPutBucket(t *testing.T) {
     c := NewTestClient()
-    err := c.PutBucket("acrazing-test", "public-read", "oss-cn-qingdao")
+    err := c.PutBucket("public-read")
     if err != nil {
         t.Errorf("put bucket error: %s\n", err.Error())
     }
@@ -18,15 +18,15 @@ func tTestPutBucket(t *testing.T) {
 
 func tTestGetBucket(t *testing.T) {
     c := NewTestClient()
-    r, e := c.GetBucket("acrazing-test", "oss-cn-qingdao", EmptyStringMap)
+    r, e := c.GetBucket(EmptyStringMap)
     if e != nil {
         t.Errorf("get bucket error %s\n", e.Error())
     }
-    t.Log(MarshalJson(r))
+    t.Log(r.Name)
 }
 
 func tTestDeleteBucket(t *testing.T) {
-    e := NewTestClient().DeleteBucket("acrazing-test2", "oss-cn-qingdao")
+    e := NewTestClient().DeleteBucket()
     if e != nil {
         t.Errorf("delete bucket error %s\n", e)
     }

@@ -4,8 +4,7 @@ import (
 )
 
 func tTestGetService(t *testing.T) {
-    c := NewTestClient()
-    r, e := c.GetService()
+    r, e := NewTestClient().GetService()
     if e != nil {
         t.Errorf("request error with %s", e.Error())
     } else {

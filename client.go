@@ -11,23 +11,30 @@ type Client struct {
     Body            io.Reader
     AccessKey       string
     AccessSecret    string
-    Host            string
+    Location        string
     BucketName      string
     ObjectName      string
     Query           map[string]string
     AuthType        AuthType
 }
 
-func NewClient(authType AuthType, key, secret string) *Client {
+func NewClient(key, secret, bucket, location string) *Client {
     r, _ := http.NewRequest("GET", "", nil)
     return &Client{
         Request: r,
         Client: &http.Client{},
         Query: map[string]string{},
-        AuthType: authType,
+        AuthType: AUTH_HEADER,
         AccessKey : key,
         AccessSecret: secret,
+        BucketName: bucket,
+        Location: location,
     }
+}
+
+func (c *Client) SetAuthType(t AuthType) *Client {
+    c.AuthType = t
+    return c
 }
 
 func (c *Client) SetAuthPair(key, secret string) *Client {
@@ -51,12 +58,6 @@ func (c *Client) SetQueries(q map[string]string) *Client {
     for k, v := range q {
         c.Query[k] = v
     }
-    return c
-}
-
-func (c *Client) SetBucketHost(bucket, loc string) *Client {
-    c.BucketName = bucket
-    c.Host = loc + ".aliyuncs.com"
     return c
 }
 
