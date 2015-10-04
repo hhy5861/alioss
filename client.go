@@ -44,8 +44,7 @@ func (c *Client) SetAuthPair(key, secret string) *Client {
 }
 
 func (c *Client) SetDate(t time.Time) *Client {
-    t = t.Add(-8*3600e9)
-    c.Request.Header.Set("Date", t.Format("Mon, 02 Jan 2006 15:04:05 GMT"))
+    c.Request.Header.Set("Date", t.UTC().Format("Mon, 02 Jan 2006 15:04:05 GMT"))
     return c
 }
 

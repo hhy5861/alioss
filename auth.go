@@ -24,7 +24,7 @@ func (c *Client) InitAuth() *Client {
         case AUTH_HEADER:
         c.HeaderAuth()
         case AUTH_URL:
-        c.UrlAuth()
+        c.UrlAuth()     // TODO: test not pass
         case AUTH_STS:
         c.StsAuth()
     }
@@ -66,6 +66,7 @@ func (c *Client) UrlAuth() *Client {
 }
 
 func (c *Client) StsAuth() *Client {
+    // TODO
     return c
 }
 

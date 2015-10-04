@@ -13,7 +13,7 @@ type Error interface {
     GetHostId() string
     Error() string
 }
-type errors struct {
+type err struct {
     XMLName     xml.Name    `xml:"Error"`
     Status      int
     Code        string
@@ -22,27 +22,27 @@ type errors struct {
     HostId      string
 }
 
-func (e errors) GetStatus() int {
+func (e err) GetStatus() int {
     return e.Status
 }
 
-func (e errors) GetCode() string {
+func (e err) GetCode() string {
     return e.Code
 }
 
-func (e errors) GetMessage() string {
+func (e err) GetMessage() string {
     return e.Message
 }
 
-func (e errors) GetRequestId() string {
+func (e err) GetRequestId() string {
     return e.RequestId
 }
 
-func (e errors) GetHostId() string {
+func (e err) GetHostId() string {
     return e.HostId
 }
 
-func (e errors) Error() string {
+func (e err) Error() string {
     return strconv.Itoa(e.Status) + " " + e.Code + ": " + e.Message
 }
 
@@ -54,8 +54,8 @@ var (
     E_MarshalXML    Error = NewError("MarshalXMLError")
 )
 
-func NewError(c string) errors {
-    return errors{Code: c}
+func NewError(c string) err {
+    return err{Code: c}
 }
 
 const NO_CONTENT string = "204 No Content"
