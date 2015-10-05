@@ -2,20 +2,21 @@ package alioss
 import (
     "net/http"
     "time"
-    "io"
 )
 
 type Client struct {
-    Request         *http.Request
-    Client          *http.Client
-    Body            io.Reader
-    AccessKey       string
-    AccessSecret    string
-    Location        string
-    BucketName      string
-    ObjectName      string
-    Query           map[string]string
-    AuthType        AuthType
+    Request         *http.Request       // request
+    Client          *http.Client        // http client
+    Response        *http.Response      // response, cannot use before call api methods
+    AccessKey       string              // access key id
+    AccessSecret    string              // access secret
+    Location        string              // position, oss-cn-hangzhou, etc.
+    // Request.Host = (BucketName + ".") + (Location + ".") + "aliyuncs.com"
+    BucketName      string              // bucket
+    ObjectName      string              // object, for bucket api, is ""
+    Query           map[string]string   // query, for sub-resource
+    AuthType        AuthType            // auth type, header, url, sts, none
+    // only implement header
 }
 
 func NewClient(key, secret, bucket, location string) *Client {
@@ -32,6 +33,10 @@ func NewClient(key, secret, bucket, location string) *Client {
     }
 }
 
+////////////
+// all the set/get method is for request
+////////////
+
 func (c *Client) SetAuthType(t AuthType) *Client {
     c.AuthType = t
     return c
@@ -45,6 +50,30 @@ func (c *Client) SetAuthPair(key, secret string) *Client {
 
 func (c *Client) SetDate(t time.Time) *Client {
     c.Request.Header.Set("Date", t.UTC().Format("Mon, 02 Jan 2006 15:04:05 GMT"))
+    return c
+}
+
+func (c *Client) SetHeader(k, v string) *Client {
+    c.Request.Header.Set(k, v)
+    return c
+}
+
+func (c *Client) AddHeader(k, v string) *Client {
+    c.Request.Header.Add(k, v)
+    return c
+}
+
+func (c *Client) AddHeaders(h map[string]string) *Client {
+    for k, v := range h {
+        c.AddHeader(k, v)
+    }
+    return c
+}
+
+func (c *Client) SetHeaders(h map[string]string) *Client {
+    for k, v := range h {
+        c.SetHeader(k, v)
+    }
     return c
 }
 
@@ -70,6 +99,7 @@ func (c *Client) Do(method string) (*http.Response, Error) {
     if e != nil {
         return r, E_HttpReq
     }
+    c.Response = r
     return r, nil
 }
 
@@ -94,4 +124,25 @@ func (c *Client) DoAll(method string, resp interface{}, req interface{}) (err Er
         }
         return err
     }
+}
+
+func (c *Client) DoBytes(method string, req interface{}) (resp []byte, err Error) {
+    if req != nil {
+        b, err := MarshalXmlReqBody(req)
+        if err != nil {
+            return resp, err
+        }
+        c.Request.Body = b
+    }
+    r, err := c.Do(method)
+    if err != nil {
+        return
+    }
+    defer r.Body.Close()
+    if r.StatusCode > 299 {
+        err = GetReqError(r)
+    } else {
+        resp, err = ReadByteResp(r)
+    }
+    return
 }

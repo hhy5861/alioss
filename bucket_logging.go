@@ -16,8 +16,10 @@ func (c *Client) PutBucketLogging(bucket, prefix string) Error {
     return c.SetQuery("logging", "").DoAll("PUT", nil, req)
 }
 
-func (c *Client) GetBucketLogging() (resp *PutBucketLoggingReq, err Error) {
-    resp = &PutBucketLoggingReq{}
+type GetBucketLoggingResp PutBucketLoggingReq
+
+func (c *Client) GetBucketLogging() (resp *GetBucketLoggingResp, err Error) {
+    resp = &GetBucketLoggingResp{}
     err = c.SetQuery("logging", "").DoAll("GET", resp, nil)
     return
 }

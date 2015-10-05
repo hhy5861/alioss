@@ -1,10 +1,4 @@
 package alioss
-import "encoding/xml"
-
-type GetBucketLocation struct {
-    string
-    XMLName         xml.Name        `xml:"LocationConstraint"`
-}
 
 type LocationConstraint []byte
 

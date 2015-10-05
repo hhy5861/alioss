@@ -23,8 +23,10 @@ func (c *Client) PutBucketWebsite(indexObject, errorObject string) Error {
     return c.SetQuery("website", "").DoAll("PUT", nil, req)
 }
 
-func (c *Client) GetBucketWebsite() (resp *PutBucketWebsiteReq, err Error) {
-    resp = &PutBucketWebsiteReq{}
+type GetBucketWebsiteResp PutBucketWebsiteReq
+
+func (c *Client) GetBucketWebsite() (resp *GetBucketWebsiteResp, err Error) {
+    resp = &GetBucketWebsiteResp{}
     err = c.SetQuery("website", "").DoAll("GET", resp, nil)
     return
 }

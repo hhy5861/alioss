@@ -15,8 +15,10 @@ func (c *Client) PutBucketReferrer(allowEmpty bool, referrerList []string) Error
     return c.SetQuery("referer", "").DoAll("PUT", nil, req)
 }
 
-func (c *Client) GetBucketReferrer() (resp *PutBucketReferrerReq, err Error) {
-    resp = &PutBucketReferrerReq{}
+type GetBucketReferrerResp PutBucketReferrerReq
+
+func (c *Client) GetBucketReferrer() (resp *GetBucketReferrerResp, err Error) {
+    resp = &GetBucketReferrerResp{}
     err = c.SetQuery("referer", "").DoAll("GET", resp, nil)
     return
 }

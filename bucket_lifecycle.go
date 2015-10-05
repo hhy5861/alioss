@@ -25,8 +25,10 @@ func (c *Client) PutBucketLifeCycle(rules []BucketLifeCycleRule) Error {
     return c.SetQuery("lifecycle", "").DoAll("PUT", nil, req)
 }
 
-func (c *Client) GetBucketLifeCycle() (resp *PutBucketLifeCycleReq, err Error) {
-    resp = &PutBucketLifeCycleReq{}
+type GetBucketLifeCycleResp PutBucketLifeCycleReq
+
+func (c *Client) GetBucketLifeCycle() (resp *GetBucketLifeCycleResp, err Error) {
+    resp = &GetBucketLifeCycleResp{}
     err = c.SetQuery("lifecycle", "").DoAll("GET", resp, nil)
     return
 }

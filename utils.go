@@ -10,7 +10,8 @@ import (
 )
 
 var (
-    EmptyStringMap map[string]string = map[string]string{}
+    EmptyStringMap      map[string]string = map[string]string{}
+    EmptyStringSlice    []string          = []string{}
 )
 
 func UnmarshalXmlResp(r *http.Response, c interface{}) Error {
@@ -24,6 +25,15 @@ func UnmarshalXmlResp(r *http.Response, c interface{}) Error {
         return E_ParseXML
     }
     return nil
+}
+
+func ReadByteResp(r *http.Response) (resp []byte, err Error) {
+    buf := bytes.NewBuffer([]byte{})
+    _, e := io.Copy(buf, r.Body)    // maybe use r.Header["Content-Length"] & io.ReadFull()?
+    if e != nil {
+        return resp, E_HttpResp
+    }
+    return buf.Bytes(), nil
 }
 
 func MarshalXmlReqBody(c interface{}) (r io.ReadCloser, err Error) {
