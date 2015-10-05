@@ -22,7 +22,7 @@ func tTestGetBucket(t *testing.T) {
     if e != nil {
         t.Errorf("get bucket error %s\n", e.Error())
     }
-    t.Log(r.Name)
+    t.Log(r.Contents[0])
 }
 
 func tTestDeleteBucket(t *testing.T) {

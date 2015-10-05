@@ -65,9 +65,11 @@ func (c *Client) AppendObject(object string, position int64, body io.Reader, siz
     if err != nil {
         return (*AppendObjectRespHeader)(nil), err
     }
+    hash, _ := strconv.ParseInt(c.Response.Header.Get("x-oss-hash-crc64ecma"), 10, 0)
+    next, _ := strconv.ParseInt(c.Response.Header.Get("x-oss-next-append-position"), 10, 0)
     resp = &AppendObjectRespHeader{
-        HashCrc64ecma: c.Response.Header.Get("x-oss-hash-crc64ecma"),
-        NextAppendPosition: c.Response.Header.Get("x-oss-next-append-position"),
+        HashCrc64ecma: hash,
+        NextAppendPosition: next,
     }
     return resp, nil
 }
