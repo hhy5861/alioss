@@ -2,7 +2,7 @@
 
 ## How to use
 
-```
+```GO
 package main
 
 import (
